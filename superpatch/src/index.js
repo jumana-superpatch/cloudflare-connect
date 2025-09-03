@@ -9,7 +9,7 @@ import { WorkflowEntrypoint } from "cloudflare:workers";
  *
  * Learn more at https://developers.cloudflare.com/workflows
  */
- 
+
 /**
  * @typedef {Object} Env
  * @property {Workflow} MY_WORKFLOW
@@ -36,7 +36,7 @@ export class MyWorkflow extends WorkflowEntrypoint {
 	async run(event, step) {
 		// Can access bindings on `this.env`
 		// Can access params on `event.payload`
-		
+
 		const files = await step.do("my first step", async () => {
 			// Fetch a list of files from $SOME_SERVICE
 			return {
@@ -72,7 +72,7 @@ export class MyWorkflow extends WorkflowEntrypoint {
 		await step.do(
 			"make a call to write that could maybe, just might, fail",
       // Define a retry strategy
-			/** @type {Object} */ ({
+			/** @type {Object} */({
 				retries: {
 					limit: 5,
 					delay: "5 second",
@@ -122,6 +122,7 @@ export default {
 		// 	params: { payload: 'to send' },
 		// });
 		return Response.json({
+			text: `Workflow Created!`,
 			id: instance.id,
 			details: await instance.status(),
 		});
