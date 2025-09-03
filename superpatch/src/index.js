@@ -25,9 +25,9 @@ export class MyWorkflow extends WorkflowEntrypoint {
 	/**
 	 * @param {Env} env
 	 */
-	constructor(env) {
-		this.env = env;
-	}
+	// constructor(env) {
+	// 	this.env = env;
+	// }
 
 	/**
 	 * @param {WorkflowEvent<Params>} event
