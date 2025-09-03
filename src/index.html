@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Contact Form</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 2rem;
+      background: #f9f9f9;
+    }
+    form {
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 2rem;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .field {
+      margin-bottom: 1rem;
+    }
+    input, select, textarea, button {
+      width: 100%;
+      padding: 0.75rem;
+      margin-top: 0.25rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+    button {
+      background: #0077cc;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #005fa3;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Contact Us</h2>
+  <form method="POST" action="https://mailgun-worker.cloudflare-superpatch.workers.dev" id="customContactForm">
+    <!-- Name -->
+    <div class="field">
+      <label>Your Name</label>
+      <input type="text" name="name" placeholder="John Doe" required>
+    </div>
+
+    <!-- Email -->
+    <div class="field">
+      <label>Your Email</label>
+      <input type="email" name="email" placeholder="you@example.com" required>
+    </div>
+
+    <!-- Phone -->
+    <div class="field">
+      <label>Your Phone</label>
+      <input type="tel" name="phone" placeholder="+1 555 555 5555">
+    </div>
+
+    <!-- Query Dropdown -->
+    <div class="field">
+      <label>How can we help?</label>
+      <select name="help_topic" id="HelpDropdown" required>
+        <option value="" disabled selected>Please Select</option>
+        <option value="associate">Help with my associate membership / account</option>
+        <option value="customer">Help with my customer account</option>
+        <option value="order">Help with new order / existing order</option>
+        <option value="signup">Help with signing up a new associate</option>
+        <option value="joining">Help with joining Super Patch</option>
+      </select>
+    </div>
+
+    <!-- Conditional Fields -->
+    <div id="AssociateIDField" class="field" style="display:none;">
+      <label>Your Associate / Rep ID</label>
+      <input type="text" name="associate_id" placeholder="12345">
+    </div>
+
+    <div id="OrderIDField" class="field" style="display:none;">
+      <label>Your Order ID</label>
+      <input type="text" name="order_id" placeholder="ORD-0001">
+    </div>
+
+    <div id="ReferralField" class="field" style="display:none;">
+      <label>How did you hear about us?</label>
+      <textarea name="referral" rows="3"></textarea>
+    </div>
+
+    <!-- Message -->
+    <div class="field">
+      <label>Your Message</label>
+      <textarea name="message" rows="6" placeholder="Type your message here..." required></textarea>
+    </div>
+
+    <!-- Submit -->
+    <button type="submit">Send</button>
+  </form>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const dropdown = document.getElementById('HelpDropdown');
+      const associateField = document.getElementById('AssociateIDField');
+      const orderField = document.getElementById('OrderIDField');
+      const referralField = document.getElementById('ReferralField');
+
+      dropdown.addEventListener('change', function () {
+        associateField.style.display = 'none';
+        orderField.style.display = 'none';
+        referralField.style.display = 'none';
+
+        if (this.value === 'associate') {
+          associateField.style.display = 'block';
+        } else if (this.value === 'order') {
+          orderField.style.display = 'block';
+        } else if (this.value === 'signup') {
+          associateField.style.display = 'block';
+          referralField.style.display = 'block';
+        } else if (this.value === 'joining') {
+          referralField.style.display = 'block';
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>
