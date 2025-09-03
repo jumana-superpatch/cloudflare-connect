@@ -65,10 +65,11 @@ export default {
 			const MAILGUN_API_KEY = env.MAILGUN_API_KEY;
 			const MAILGUN_DOMAIN = env.MAILGUN_DOMAIN;
 			//   const SUPPORT_EMAILS = (env.SUPPORT_EMAILS || "").split(",");
-			const SUPPORT_EMAILS = env.SUPPORT_EMAIL;
+			const SUPPORT_EMAIL = env.SUPPORT_EMAIL;
 			const formBody = new URLSearchParams();
 			formBody.append("from", `Super Patch Support <postmaster@${MAILGUN_DOMAIN}>`);
-			SUPPORT_EMAILS.forEach(e => formBody.append("to", e.trim()));
+			// SUPPORT_EMAILS.forEach(e => formBody.append("to", e.trim()));
+			formBody.append("to", SUPPORT_EMAIL)
 			formBody.append("subject", subject);
 			formBody.append("text", text);
 
