@@ -42,7 +42,7 @@ export default {
       method: "POST",
       headers: {
         "Authorization": `Klaviyo-API-Key ${env.KLAVIYO_API_KEY}`,
-		"Revision": "2023-02-22",
+		"Revision": "2024-06-15",
         "Content-Type": "application/json"
       },
       body: JSON.stringify(klaviyoPayload)
