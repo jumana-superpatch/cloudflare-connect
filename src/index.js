@@ -46,20 +46,58 @@ export default {
 			// Build email content
 			const subject = `New Contact Form Submission (${help_topic})`;
 			const text = `
-				📩 New Contact Form Submission
+				New Contact Form Submission
 
-				👤 Name: ${name}
-				📧 Email: ${email}
-				📞 Phone: ${phone}
+				Name: ${name}
+				Email: ${email}
+				Phone: ${phone}
 
-				❓ Help Topic: ${help_topic}
-				🆔 Associate ID: ${associate_id}
-				📦 Order ID: ${order_id}
-				🙋 Referral: ${referral}
+				Help Topic: ${help_topic}
+				Associate ID: ${associate_id}
+				Order ID: ${order_id}
+				Referral: ${referral}
 
-				📝 Message:
+				Message:
 				${message}
 				`;
+			// HTML body with table formatting
+			const html = `
+			<h2>📩 New Contact Form Submission</h2>
+			<table border="1" cellpadding="8" cellspacing="0" style="border-collapse:collapse;font-family:Arial,sans-serif;font-size:14px;">
+				<tr>
+				<td><strong>👤 Name</strong></td>
+				<td>${name}</td>
+				</tr>
+				<tr>
+				<td><strong>📧 Email</strong></td>
+				<td>${email}</td>
+				</tr>
+				<tr>
+				<td><strong>📞 Phone</strong></td>
+				<td>${phone}</td>
+				</tr>
+				<tr>
+				<td><strong>❓ Help Topic</strong></td>
+				<td>${help_topic}</td>
+				</tr>
+				<tr>
+				<td><strong>🆔 Associate ID</strong></td>
+				<td>${associate_id}</td>
+				</tr>
+				<tr>
+				<td><strong>📦 Order ID</strong></td>
+				<td>${order_id}</td>
+				</tr>
+				<tr>
+				<td><strong>🙋 Referral</strong></td>
+				<td>${referral}</td>
+				</tr>
+				<tr>
+				<td><strong>📝 Message</strong></td>
+				<td>${message.replace(/\n/g, "<br>")}</td>
+				</tr>
+			</table>
+			`;
 
 			// Mailgun config
 			const MAILGUN_API_KEY = env.MAILGUN_API_KEY;
@@ -72,6 +110,8 @@ export default {
 			formBody.append("to", SUPPORT_EMAIL)
 			formBody.append("subject", subject);
 			formBody.append("text", text);
+			formBody.append("html", html);   // HTML table
+
 
 			// Send via Mailgun
 			const mgRes = await fetch(`https://api.mailgun.net/v3/${MAILGUN_DOMAIN}/messages`, {
