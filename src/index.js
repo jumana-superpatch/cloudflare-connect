@@ -8,11 +8,6 @@
  * Learn more at https://developers.cloudflare.com/workers/
  */
 
-// export default {
-// 	async fetch(request, env, ctx) {
-// 		return new Response('Hello World!');
-// 	},
-// };
 export default {
 	async fetch(request, env) {
 		if (request.method === "OPTIONS") {
@@ -33,7 +28,7 @@ export default {
 		try {
 			const body = await request.json();
 
-			// Extract fields from Shopify form JSON
+			// Shopify form JSON
 			const name = body["contact[name]"] || "N/A";
 			const email = body["contact[email]"] || "N/A";
 			const phone = body["contact[phone]"] || "N/A";
@@ -45,12 +40,8 @@ export default {
 			const locale = body["contact[Locale]"] || "en";
 
 			// --- Choose Mailgun template based on locale
-			// Your English template is called `contact form[dev]`
-			// Create a Spanish one e.g. `contact form[dev]-es`
+
 			let templateName = "contact form[dev]";
-			if (locale.toLowerCase().startsWith("es")) {
-				templateName = "contact form[dev]-es";
-			}
 
 			// Mailgun config
 			const MAILGUN_API_KEY = env.MAILGUN_API_KEY;
@@ -63,7 +54,7 @@ export default {
 			if (email && email !== "N/A") {
 				formBody.append("h:Reply-To", email);
 			}
-			// Use template instead of raw HTML
+			// NOT WORKING YET template instead of raw HTML
 			formBody.append("template", templateName);
 
 			// Variables passed into template
@@ -112,3 +103,4 @@ export default {
 	}
 };
 
+/**************NOT WORKING YETTTTTTTTT************/
