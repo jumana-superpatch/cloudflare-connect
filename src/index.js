@@ -8,6 +8,11 @@
  * Learn more at https://developers.cloudflare.com/workers/
  */
 
+// export default {
+// 	async fetch(request, env, ctx) {
+// 		return new Response('Hello World!');
+// 	},
+// };
 export default {
 	async fetch(request, env) {
 		if (request.method === "OPTIONS") {
@@ -28,7 +33,7 @@ export default {
 		try {
 			const body = await request.json();
 
-			// Shopify form JSON
+			// Extract fields from Shopify form JSON
 			const name = body["contact[name]"] || "N/A";
 			const email = body["contact[email]"] || "N/A";
 			const phone = body["contact[phone]"] || "N/A";
@@ -37,37 +42,76 @@ export default {
 			const order_id = body["contact[Order ID]"] || "N/A";
 			const referral = body["contact[Referral]"] || "N/A";
 			const message = body["contact[body]"] || "N/A";
-			const locale = body["contact[Locale]"] || "en";
 
-			// --- Choose Mailgun template based on locale
+			// Build email content
+			const subject = `New Contact Form Submission (${help_topic})`;
+			const text = `
+				New Contact Form Submission
 
-			let templateName = "contact form[dev]";
+				Name: ${name}
+				Email: ${email}
+				Phone: ${phone}
+
+				Help Topic: ${help_topic}
+				Associate ID: ${associate_id}
+				Order ID: ${order_id}
+				Referral: ${referral}
+
+				Message:
+				${message}
+				`;
+			// HTML body with table formatting
+			const html = `
+			<h2>📩 New Contact Form Submission</h2>
+			<table border="1" cellpadding="8" cellspacing="0" style="border-collapse:collapse;font-family:Arial,sans-serif;font-size:14px;">
+				<tr>
+				<td><strong>👤 Name</strong></td>
+				<td>${name}</td>
+				</tr>
+				<tr>
+				<td><strong>📧 Email</strong></td>
+				<td>${email}</td>
+				</tr>
+				<tr>
+				<td><strong>📞 Phone</strong></td>
+				<td>${phone}</td>
+				</tr>
+				<tr>
+				<td><strong>❓ Help Topic</strong></td>
+				<td>${help_topic}</td>
+				</tr>
+				<tr>
+				<td><strong>🆔 Associate ID</strong></td>
+				<td>${associate_id}</td>
+				</tr>
+				<tr>
+				<td><strong>📦 Order ID</strong></td>
+				<td>${order_id}</td>
+				</tr>
+				<tr>
+				<td><strong>🙋 Referral</strong></td>
+				<td>${referral}</td>
+				</tr>
+				<tr>
+				<td><strong>📝 Message</strong></td>
+				<td>${message.replace(/\n/g, "<br>")}</td>
+				</tr>
+			</table>
+			`;
 
 			// Mailgun config
 			const MAILGUN_API_KEY = env.MAILGUN_API_KEY;
 			const MAILGUN_DOMAIN = env.MAILGUN_DOMAIN;
+			//   const SUPPORT_EMAILS = (env.SUPPORT_EMAILS || "").split(",");
 			const SUPPORT_EMAIL = env.SUPPORT_EMAIL;
-
 			const formBody = new URLSearchParams();
 			formBody.append("from", `Super Patch Support <postmaster@${MAILGUN_DOMAIN}>`);
-			formBody.append("to", SUPPORT_EMAIL);
-			if (email && email !== "N/A") {
-				formBody.append("h:Reply-To", email);
-			}
-			// NOT WORKING YET template instead of raw HTML
-			formBody.append("template", templateName);
+			// SUPPORT_EMAILS.forEach(e => formBody.append("to", e.trim()));
+			formBody.append("to", SUPPORT_EMAIL)
+			formBody.append("subject", subject);
+			formBody.append("text", text);
+			formBody.append("html", html);   // HTML table
 
-			// Variables passed into template
-			formBody.append("h:X-Mailgun-Variables", JSON.stringify({
-				name,
-				email,
-				phone,
-				help_topic,
-				associate_id,
-				order_id,
-				referral,
-				message: message.replace(/\n/g, "<br>")
-			}));
 
 			// Send via Mailgun
 			const mgRes = await fetch(`https://api.mailgun.net/v3/${MAILGUN_DOMAIN}/messages`, {
@@ -102,5 +146,4 @@ export default {
 		}
 	}
 };
-
-/**************NOT WORKING YETTTTTTTTT************/
+// Template not appended yet
